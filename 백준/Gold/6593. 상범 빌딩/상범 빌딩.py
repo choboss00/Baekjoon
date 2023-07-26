@@ -26,9 +26,7 @@ import sys
 from collections import deque
 
 # 갈 수 있는 방향 표시
-dx = [1,-1,0,0,0,0]
-dy = [0,0,1,-1,0,0]
-dz = [0,0,0,0,1,-1]
+D = [(1,0,0),(0,1,0),(-1,0,0),(0,-1,0),(0,0,1),(0,0,-1)]
 
 def bfs(x1, y1, z1):
     queue = deque()
@@ -40,10 +38,10 @@ def bfs(x1, y1, z1):
     while queue:
         x2,y2,z2 = queue.popleft()
 
-        for i in range(6):
-            nx = x2 + dx[i]
-            ny = y2 + dy[i]
-            nz = z2 + dz[i]
+        for dx,dy,dz in D:
+            nx = x2 + dx
+            ny = y2 + dy
+            nz = z2 + dz
 
             # 예외처리
             if 0 <= nx < C and 0 <= ny < R and 0 <= nz < L:
@@ -57,6 +55,17 @@ def bfs(x1, y1, z1):
                     # 방문 표시
                     board[nz][ny][nx] = board[z2][y2][x2] + 1
     return -1
+
+def solve():
+    for z in range(L):
+        for y in range(R):
+            for x in range(C):
+                if board[z][y][x] == 'S':
+                    ans = bfs(x,y,z)
+                    if ans == -1:
+                        return 'Trapped!'
+                    else:
+                        return f'Escaped in {ans} minute(s).'
 
 input = sys.stdin.readline
 
@@ -82,25 +91,4 @@ while True:
         # 띄어쓰기 입력 받기
         jump = input()
 
-    # 정답
-    ans = -1
-
-    for z in range(L):
-        for y in range(R):
-            for x in range(C):
-                # 처음 위치 찾기
-                if board[z][y][x] == 'S':
-                    ans = bfs(x,y,z)
-                    
-
-    if ans == -1:
-        print("Trapped!")
-    else:
-        print(f"Escaped in {ans} minute(s).")
-
-
-
-
-
-
-
+    print(solve())
