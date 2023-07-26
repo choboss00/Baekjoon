@@ -32,7 +32,7 @@ dz = [0,0,0,0,1,-1]
 
 def bfs(x1, y1, z1):
     queue = deque()
-    queue.append([x1, y1, z1])
+    queue.append((x1, y1, z1))
 
     # 방문 표시
     board[z1][y1][x1] = 0
@@ -52,7 +52,7 @@ def bfs(x1, y1, z1):
                     return board[z2][y2][x2] + 1
                 # 갈 수 있는 길일경우
                 if board[nz][ny][nx] == '.':
-                    queue.append([nx,ny,nz])
+                    queue.append((nx,ny,nz))
 
                     # 방문 표시
                     board[nz][ny][nx] = board[z2][y2][x2] + 1
@@ -91,6 +91,7 @@ while True:
                 # 처음 위치 찾기
                 if board[z][y][x] == 'S':
                     ans = bfs(x,y,z)
+                    
 
     if ans == -1:
         print("Trapped!")
