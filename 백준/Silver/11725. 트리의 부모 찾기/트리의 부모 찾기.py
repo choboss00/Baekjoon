@@ -6,8 +6,14 @@
 
 """
 import sys
-from collections import deque
-
+sys.setrecursionlimit(10**6)
+def dfs(start_node):
+    for node in tree[start_node]:
+        # 만약 아직 방문하지 않은 자식 노드일 경우
+        if visited[node] == 0:
+            # 방문표시 ( 예를 들어 1번 노드의 경우, 자식이 6, 4 이니 6번 노드와 4번 노드가 자신의 자식이라고 표시를 남김 )
+            visited[node] = start_node
+            dfs(node)
 input = sys.stdin.readline
 
 n = int(input())
@@ -23,15 +29,7 @@ for _ in range(n-1):
 # 방문 표시
 visited = [0 for _ in range(n+1)]
 
-queue = deque()
-
-queue.append((1))
-while queue:
-    node = queue.popleft()
-
-    for next_node in tree[node]:
-        if visited[next_node] == 0:
-            visited[next_node] = node
-            queue.append(next_node)
+# dfs 호출
+dfs(1)
 
 print(*visited[2:], sep="\n")
