@@ -27,42 +27,6 @@ from collections import deque
 
 D = [(-1,0,0),(1,0,0),(0,-1,0),(0,1,0),(0,0,-1),(0,0,1)]
 
-def bfs(temp):
-    queue = deque()
-    cnt = 0
-    for temps in temp:
-        queue.append(temps)
-
-    while queue:
-        x3,y3,z3,d3 = queue.popleft()
-
-        for dx,dy,dz in D:
-            nx = x3 + dx
-            ny = y3 + dy
-            nz = z3 + dz
-            dd = d3
-
-            # 예외 처리
-            if 0 <= nx < m and 0 <= ny < n and 0 <= nz < h:
-                # 다음 위치가 익지 않은 토마토일 경우
-                if board[nz][ny][nx] == 0:
-                    queue.append((nx,ny,nz,dd+1))
-                    # 방문 처리
-                    board[nz][ny][nx] = 1
-            if cnt < dd:
-                cnt = dd
-    return cnt
-def solve():
-    temp = []
-    for z1 in range(h):
-        for y1 in range(n):
-            for x1 in range(m):
-                if board[z1][y1][x1] == 1:
-                    temp.append((x1,y1,z1,0))
-
-    return bfs(temp)
-
-
 def minus():
     for z1 in range(h):
         for y1 in range(n):
@@ -70,25 +34,45 @@ def minus():
                 if board[z1][y1][x1] == 0:
                     return -1
     return 0
+
 input = sys.stdin.readline
 
 m,n,h = map(int, input().split())
+cnt = 0
+board = [[] for _ in range(h)]
 
-board = []
+queue = deque()
 
 for z in range(h):
-    z_list = []
     for y in range(n):
-        z_list.append(list(map(int,input().split())))
+        board[z].append(list(map(int, input().split())))
+        for x in range(m):
+            if board[z][y][x] == 1:
+                queue.append((x,y,z,0))
 
-    board.append(z_list)
+while queue:
+    x3,y3,z3,d3 = queue.popleft()
 
+    for dx,dy,dz in D:
+        nx = x3 + dx
+        ny = y3 + dy
+        nz = z3 + dz
+        dd = d3
 
-ans1 = solve()
+        # 예외 처리
+        if 0 <= nx < m and 0 <= ny < n and 0 <= nz < h:
+            # 다음 위치가 익지 않은 토마토일 경우
+            if board[nz][ny][nx] == 0:
+                queue.append((nx,ny,nz,dd+1))
+                # 방문 처리
+                board[nz][ny][nx] = 1
+        if cnt < dd:
+            cnt = dd
+
 ans2 = minus()
 
 if ans2 == -1:
     print(ans2)
 else:
-    print(ans1)
+    print(cnt)
 
