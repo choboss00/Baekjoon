@@ -4,12 +4,6 @@
 루트 : 1
 각 노드의 부모를 구하는 프로그램 작성하기
 
-dfs 로 쭉쭉 올라가면 될듯
--> 만약 1이 부모로 있다면
--> ok
-
-그렇지 않으면
--> 내 자식
 """
 import sys
 sys.setrecursionlimit(10**6)
@@ -38,5 +32,4 @@ visited = [0 for _ in range(n+1)]
 # dfs 호출
 dfs(1)
 
-for ans in visited[2:]:
-    print(ans)
+print(*visited[2:], sep="\n")
