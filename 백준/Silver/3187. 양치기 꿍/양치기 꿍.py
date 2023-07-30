@@ -1,10 +1,26 @@
+"""
+3187번. 양치기 꿍
+
+같은 울타리 영역 안의 양들의 숫자가 늑대의 숫자보다
+더 많을 경우 늑대가 잡아먹힘
+
+울타리 : #
+빈공간 : .
+늑대 : v
+양 : k
+
+몇 마리의 양과 늑대가 살아남을 것인지?
+
+벽이 아닐 경우
+-> 탐색 진행
+-> 늑대와 양의 갯수 세서
+-> 더 많은 수를 리턴
+"""
 import sys
-sys.setrecursionlimit(10**6)
 D = [(1,0), (-1,0), (0,1), (0,-1)]
-v1,k1 = 0,0
+
 def dfs(x1, y1):
-    global v1
-    global k1
+    v1, k1 = 0, 0
     # 늑대일 경우
     if board[y1][x1] == 'v':
         v1 += 1
@@ -13,18 +29,27 @@ def dfs(x1, y1):
         k1 += 1
 
     # 방문 처리
-    board[y1][x1] = '@'
+    board[y1][x1] = '#'
 
-    for i in D:
-        dx = x1 + i[0]
-        dy = y1 + i[1]
+    stack = []
+    stack.append((x1,y1))
 
-        # 예외 처리
-        if 0 <= dx < c and 0 <= dy < r:
-            # 갈 수 있는 경우
-            if board[dy][dx] != '#' and board[dy][dx] != '@':
-                dfs(dx,dy)
+    while stack:
+        x2, y2 = stack.pop()
 
+        for dx, dy in D:
+            nx = x2 + dx
+            ny = y2 + dy
+
+            if 0 <= nx < c and 0 <= ny < r:
+                if board[ny][nx] != '#':
+                    if board[ny][nx] == 'k':
+                        k1 += 1
+                    if board[ny][nx] == 'v':
+                        v1 += 1
+                    board[ny][nx] = '#'
+                    stack.append((nx,ny))
+    return (k1, 0) if k1 > v1 else (0, v1)
 
 input = sys.stdin.readline
 
@@ -44,11 +69,7 @@ for y in range(r):
     for x in range(c):
         # 벽이 아닐 경우
         if board[y][x] != '#':
-            dfs(x,y)
-            # 늑대가 더 많았을 때
-            if v1 >= k1:
-                ans[1] += v1
-            else:
-                ans[0] += k1
-            v1, k1 = 0,0
+            k2, v2 = dfs(x,y)
+            ans[0] += k2
+            ans[1] += v2
 print(*ans)
