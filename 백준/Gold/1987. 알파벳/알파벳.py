@@ -3,6 +3,9 @@ def back(x,y, cnt):
     global ans
     # 최대 깊이 계산
     ans = max(ans, cnt)
+    
+    if ans == 26:
+        return
 
     for dx, dy in ((1,0), (-1,0), (0,1), (0,-1)):
         nx = x + dx
