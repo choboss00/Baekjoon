@@ -1,35 +1,41 @@
 import sys
-def back(x,y, cnt):
+def bfs(x,y, alpha):
     global ans
-    # 최대 깊이 계산
-    ans = max(ans, cnt)
-    
-    if ans == 26:
-        return
 
-    for dx, dy in ((1,0), (-1,0), (0,1), (0,-1)):
-        nx = x + dx
-        ny = y + dy
+    stack = [(x,y,alpha)]
+    # 방문 처리
+    visited[y][x] = board[y][x]
 
-        # 예외 처리
-        if 0 <= nx < c and 0 <= ny < r:
-            # 아직 방문하지 않았을 경우
-            if not visited[board[ny][nx]]:
-                # 방문 처리
-                visited[board[ny][nx]] = True
-                back(nx,ny, cnt + 1)
-                visited[board[ny][nx]] = False
+    while stack:
+        x,y,alpha = stack.pop()
+        # 최대 길이
+        if ans < len(alpha):
+            ans = len(alpha)
+
+        # 끝값
+        if ans == 26:
+            return
+
+        for dx, dy in ((1,0), (-1,0), (0,1), (0,-1)):
+            nx = x + dx
+            ny = y + dy
+
+            if 0 <= nx < c and 0 <= ny < r:
+                if board[ny][nx] not in alpha:
+                    check = alpha + board[ny][nx]
+                    # 아직 가지 않았을 경우
+                    if visited[ny][nx] != check:
+                        # 방문 처리
+                        visited[ny][nx] = check
+                        stack.append((nx,ny,check))
 
 input = sys.stdin.readline
 
 r,c = map(int, input().split())
-board = [list(map(lambda x: ord(x) - 65, input().strip())) for _ in range(r)]
+board = [list(input()) for _ in range(r)]
+visited = [[[''] for _ in range(c)] for _ in range(r)]
 
-visited = [False for _ in range(26)]
+ans = 0
 
-# 처음 위치 방문 처리
-visited[board[0][0]] = True
-ans = 1
-
-back(0,0,1)
+bfs(0,0,board[0][0])
 print(ans)
