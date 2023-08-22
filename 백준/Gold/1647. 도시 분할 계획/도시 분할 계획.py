@@ -6,10 +6,7 @@ def find(parent, x):
     parent[x] = find(parent, parent[x])
     return parent[x]
 
-def union(parent, a, b):
-    rootA = find(parent, a)
-    rootB = find(parent, b)
-
+def union(parent, rootA, rootB):
     if rootA < rootB:
         parent[rootB] = rootA
     else:
@@ -38,12 +35,24 @@ edges.sort()
 ans = 0
 # 마지막 비용 기억하기
 lastNum = 0
+# 연결 횟수 체크
+cnt = 0
 for edge in edges:
     cost, a, b = edge
 
-    if find(parent, a) != find(parent, b):
-        union(parent, a, b)
-        ans += cost
-        lastNum = cost
+    rootA = find(parent, a)
+    rootB = find(parent, b)
+    # 루트노드가 같을 경우 그래프가 사이클이 발생함
+    if rootA == rootB:
+        continue
+
+    union(parent, rootA, rootB)
+    ans += cost
+    lastNum = cost
+    cnt += 1
+
+    if cnt == (n-1):
+        break
+
 
 print(ans - lastNum)
