@@ -18,24 +18,24 @@
 1. 소수 판정
 """
 import sys
-import math
 
 input = sys.stdin.readline
+
+def prime(n):
+    cnt = 0
+    arr = [0 for _ in range(n+1)]
+
+    for i in range(2, n+1):
+        if arr[i] == 0:
+            cnt += 1
+            for j in range(i, n+1, i):
+                arr[j] = 1 # 소수가 아니기 때문에 처리해줌
+    return cnt
 
 while True:
     n = int(input())
 
     if n == 0:
         break
-    # 소수 개수 카운트
-    cnt = 0
-    for i in range(n+1, 2*n+1):
-        check = False
-        for j in range(2, int(math.sqrt(i)+1)):
-            # 나눠지는 수가 있을 경우
-            if i % j == 0:
-                check = True
-                break
-        if not check:
-            cnt += 1
-    print(cnt)
+
+    print(prime(n * 2) - prime(n))
