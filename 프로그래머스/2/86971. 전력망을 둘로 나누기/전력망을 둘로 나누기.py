@@ -1,61 +1,33 @@
-from collections import deque
-
 def solution(n, wires):
-    answer = []
-    
     graph = [[] for _ in range(n+1)]
     
     for a, b in wires:
         graph[a].append(b)
         graph[b].append(a)
     
+    
+    def dfs(node, parent):
+        cnt = 1
+        for child in graph[node]:
+            if child != parent:
+                cnt += dfs(child, node)
+        return cnt
+    
+    min_diff = float("inf")
+    
     for a, b in wires:
-        # 간선의 정보 하나 제외하기
-        graph[a].pop(graph[a].index(b))
-        graph[b].pop(graph[b].index(a))
+        graph[a].remove(b)
+        graph[b].remove(a)
         
-        queue = deque()
-        visited = [False for _ in range(n+1)]
-        # a번 노드를 먼저 bfs 탐색 진행
-        queue.append(a)
-        cnt_a = 1
+        cnt_a = dfs(a, b)
+        cnt_b = n - cnt_a
         
-        visited[a] = True
-
-        while queue:
-            now_a = queue.popleft()
-            
-            for next_node in graph[now_a]:
-                if not visited[next_node]:
-                    queue.append(next_node)
-                    visited[next_node] = True
-                    cnt_a += 1
+        min_diff = min(min_diff, abs(cnt_a - cnt_b))
         
-        # 방문 정보 초기화
-        visited = [False for _ in range(n+1)]
-        # b번 노드 탐색하기
-        queue.append(b)
-        cnt_b = 1
-        
-        visited[b] = True
-        
-        while queue:
-            now_b = queue.popleft()
-            
-            for next_node in graph[now_b]:
-                if not visited[next_node]:
-                    queue.append(next_node)
-                    visited[next_node] = True
-                    cnt_b += 1
-        
-        
-        answer.append(abs(cnt_a - cnt_b))
-        
-        # 간선 정보 초기화
         graph[a].append(b)
         graph[b].append(a)
     
-    return min(answer)
+    return min_diff
 
 """
 ## 문제
